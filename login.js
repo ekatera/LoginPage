@@ -2,25 +2,22 @@ const users = JSON.parse(localStorage.getItem("users") || "[]");
 
 const signin = document.querySelector(".signin");
 const login = document.querySelector(".login");
-const logout = document.querySelector(".logout");
 const uname_element = document.querySelector("#uname");
 const upass_element = document.querySelector("#upass");
 const error_msg = document.getElementById("errorMsg");
-const status_msg = document.getElementById("loginStatus");
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const active_user = sessionStorage.getItem("currentUser");
 
     if (active_user) {
         console.log(`User ${active_user} is already logged in`);
-        status_msg.textContent = active_user;
     }
 });
  
 
 function find_user(user_name) 
 {
-
     if (users.some(u => u.name === user_name)) {
         console.warn("User with this name exists");
         return true;
@@ -31,8 +28,10 @@ function find_user(user_name)
 function login_user(user_name, user_password) {
     if (users.some(u => u.name === user_name && u.password === user_password)) {
         console.warn("User found");
-        status_msg.textContent = user_name;
         sessionStorage.setItem("currentUser", user_name);
+        window.location.href = "welcome.html";
+    } else {
+         error_msg.textContent = "User with this name and login not found!";
     }
 }
 
@@ -41,7 +40,10 @@ function add_user (user_name, user_password) {
     if (!user_exit) {
         users.push({name : user_name, password : user_password});
         localStorage.setItem("users", JSON.stringify(users));
+        sessionStorage.setItem("currentUser", user_name);
         console.log("User added");
+        window.location.href = "welcome.html";
+
     } else {
         error_msg.textContent = "User with this name already exists";
     }
@@ -81,5 +83,8 @@ login.onclick = () =>
     if ( (user_name.length > 0) && (user_password.length > 0) )
     {
        login_user(user_name, user_password);
+      
+    } else {
+        error_msg.textContent = "Username or password is empty.";
     }
 }
